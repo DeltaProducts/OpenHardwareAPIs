@@ -203,11 +203,13 @@ psu = get_psu_info(id)
 import libonlp
 num_fans = libonlp.get_number_of_fans()
 while(num_fans > 0):
-  libonlp.set_fan_rpm(num_fans, 10000)
+  fan = libonlp.fan_info_get(num_fans)
+  fan.set_fan_rpm(10000)
+  print fan.get_description()
   num_fans = num_fans - 1
 ```
 
-In the above code example the libonlp is the python library which internally defines the functions get_number_fans and set_fan_rpm. As can be seen in the code, the set_fan_rpm function will set all the fans rpm in the switch to 10000.
+In the above code example the libonlp is the python library which internally defines the functions get_number_fans which provide total number of fans available in the system. The function fan_info_get(num_fans) will return the corresponding fan object and further operations like setting the fan's rpm and getting the fan's description e.t.c can be achieved.
 
 ## License
 Work In Progress..
