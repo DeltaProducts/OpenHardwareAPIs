@@ -4,8 +4,42 @@ OpenHardwareAPIs - A set of Python APIs to control bare-metal switches fan,led,p
 ## Synopsis
 These APIs are written in python implemented by using ctypes to interface with C Language APIs provided by ONLP libraries.
 
-## Code Example  
-
+## Code Example 
+The following code is redefining the C structures in the library onlp to python.
+```
+   class onlp_fan_mode_e:
+           ONLP_FAN_MODE_OFF = 1
+           ONLP_FAN_MODE_SLOW = 2
+           ONLP_FAN_MODE_NORMAL = 3
+          ONLP_FAN_MODE_FAST = 4
+          ONLP_FAN_MODE_MAX = 5
+          ONLP_FAN_MODE_LAST = 5,
+          ONLP_FAN_MODE_COUNT= 6
+          ONLP_FAN_MODE_INVALID = -1,
+  class onlp_oid_hdr(ctypes.Structure):
+      _fields_ = [("id", ctypes.c_uint),
+                 ("description", ctypes.c_char * 128),
+                 ("poid", ctypes.c_uint),
+                 ("coids", ctypes.c_uint * 32)]
+ 
+ class onlp_fan_info_t(ctypes.Structure):
+      _fields_ = [("hdr", onlp_oid_hdr),
+                 ("status", ctypes.c_uint),
+                 ("caps", ctypes.c_uint),
+                 ("rpm", ctypes.c_int),
+                 ("percentage", ctypes.c_int),
+                 ("mode", ctypes.c_int),
+                 ("model", ctypes.c_char * 64),
+                 ("serial",ctypes.c_char * 64)]                 
+```
+```
+def set_fan_rpm(fanid, rpm):
+        get_fan = onlp_fan_info_t()
+        fan_oid = 0x300000
+        testlib.onlp_fan_init() // The onlp_fan_init is a C function.
+        fan_oid = fan_oid | fanid
+        testlib.onlp_fan_info_get(fan_oid, rpm)
+```
 
 ## Motivation
 The motivation for this is to give developer a way to control different features of the switch's hardware components.  
