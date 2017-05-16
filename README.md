@@ -6,14 +6,6 @@ These APIs are written in python implemented by using ctypes to interface with C
 
 ## Code Example  
 
-```
-import libonlp
-num_fans = libonlp.get_number_of_fans()
-while(num_fans > 0):
-  libonlp.set_fan_rpm(num_fans, 10000)
-  num_fans = num_fans - 1
-```  
-In the above code example the libonlp is the python library which internally defines the functions get_number_fans and set_fan_rpm. As can be seen in the code, the set_fan_rpm function will set all the fans rpm in the switch to 10000.
 
 ## Motivation
 The motivation for this is to give developer a way to control different features of the switch's hardware components.  
@@ -148,15 +140,74 @@ fan.set_fan_direction(dir)
      --Sets the fan's direction.  
  
      
-###  SFP information.
+###  {Q}SFP information.
+num_sfp_ports = get_number_of_sfp_ports()
 
+      --Return number of ports that are {Q}SFP-capable.
 
+sfp = get_sfp_info(port)
+
+      --Returns the sfp object. The object has the following attributes which can be accessed by their corresponding sfp.get_xyz().
+      ```
+      Port 1: Present, Status = 0x00000014 [ RX_LOS,TX_DISABLE ]
+      eeprom:
+        0000: 0d 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00
+        0010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+        0020: 00 00 43 4d 50 51 41 41 50 43 41 41 33 37 2d 31
+        0030: 33 32 32 2d 30 31 56 30 31 20 51 53 46 50 2d 48
+        0040: 34 30 47 2d 43 55 31 4d 20 20 20 20 20 20 00 00
+        0050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+        0060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+        0070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+        0080: 0d 00 23 08 00 00 00 00 00 00 00 05 67 00 00 00
+        0090: 00 00 01 a0 4f 45 4d 20 20 20 20 20 20 20 20 20
+        00a0: 20 20 20 20 00 a8 b0 ae 51 53 46 50 2d 48 34 30
+        00b0: 47 2d 43 55 32 4d 20 20 30 32 03 04 00 00 46 59
+        00c0: 00 00 00 00 48 4c 31 36 30 36 30 33 30 32 36 20
+        00d0: 20 20 20 20 31 31 31 32 32 33 30 30 00 00 00 86
+        00e0: 00 00 1c 37 90 79 36 75 6f 77 8f 57 77 b7 e1 8f
+        00f0: fa 8f 14 00 00 00 00 00 00 00 00 00 1d 27 dd 33
+     ```      
 
 ### PSU information.
+num_of_psus = get_num_of_psus()
 
+
+       --Returns number of PSUs that are available in the system. The ids start from 1 to num_of_psus.
+psu = get_psu_info(id)
+
+
+       --Returns the psu object. The object has the following details which can be accessed by their corresponding psu.get_xyz functions.
+       
+       
+       ```
+       psu @ 1 = {
+           Description: PSU-1
+           Model:  00007
+           SN:     81 
+           Status: 0x00000005 [ PRESENT,UNPLUGGED ]
+           Caps:   0x00000000
+           Vin:    116750
+           Vout:   12023
+           Iin:    761
+           Iout:   6375
+           Pin:    88500
+           Pout:   76625
+       }
+
+         ```
 
 ## Tests
-Describe and show how to run the tests with code examples.
+
+```
+import libonlp
+num_fans = libonlp.get_number_of_fans()
+while(num_fans > 0):
+  libonlp.set_fan_rpm(num_fans, 10000)
+  num_fans = num_fans - 1
+```
+
+In the above code example the libonlp is the python library which internally defines the functions get_number_fans and set_fan_rpm. As can be seen in the code, the set_fan_rpm function will set all the fans rpm in the switch to 10000.
 
 ## License
-A short snippet describing the license (MIT, Apache, etc.)
+Work In Progress..
