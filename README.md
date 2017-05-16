@@ -18,7 +18,8 @@ The following are the list of APIs that will be provided by this python library.
 sys_info = get_system_info()  
 
 
-       --Returns the system information.The returned object has the following details which can be accessed by their corresponding sys_info.get_xyz() function call.
+       --Returns the system information.The returned object has the following details which 
+         can be accessed by their corresponding sys_info.get_xyz() function call.
        
        
        ```  
@@ -44,7 +45,8 @@ num_of_therm_sensors = get_num_of_therm_sensors()
 thermal = get_thermal_info(id)
 
 
-       --Returns the thermal sensor object. The object has the following details which can be accessed by their corresponding thermal.get_xyz functions.
+       --Returns the thermal sensor object. The object has the following details which 
+         can be accessed by their corresponding thermal.get_xyz functions.
        
        
        ```
@@ -69,7 +71,8 @@ num_of_leds = get_num_of_sys_leds()
 led = get_led_info(id)
 
 
-        --Returns the led object. The object has the following details which can be accessed by their corresponding led.get_xyz functions.
+        --Returns the led object. The object has the following details which 
+          can be accessed by their corresponding led.get_xyz functions.
         
         
       ```        
@@ -104,7 +107,8 @@ num_of_fans = get_num_of_fans()
 fan  = get_fan_info(id)  
 
 
-      --Returns the fan object. The object has the following details which can be accessed by their corresponding fan.get_xyz functions.  
+      --Returns the fan object. The object has the following details which 
+        can be accessed by their corresponding fan.get_xyz functions.  
       
       
       ```
@@ -147,7 +151,8 @@ num_sfp_ports = get_number_of_sfp_ports()
 
 sfp = get_sfp_info(port)
 
-      --Returns the sfp object. The object has the following attributes which can be accessed by their corresponding sfp.get_xyz().
+      --Returns the sfp object. The object has the following attributes which 
+        can be accessed by their corresponding sfp.get_xyz().
       ```
       Port 1: Present, Status = 0x00000014 [ RX_LOS,TX_DISABLE ]
       eeprom:
@@ -177,7 +182,8 @@ num_of_psus = get_num_of_psus()
 psu = get_psu_info(id)
 
 
-       --Returns the psu object. The object has the following details which can be accessed by their corresponding psu.get_xyz functions.
+       --Returns the psu object. The object has the following details which 
+         can be accessed by their corresponding psu.get_xyz functions.
        
        
        ```
