@@ -249,9 +249,9 @@ while(num_fans > 0):
   num_fans = num_fans - 1
 ```
 
-In the code example above, libonlp is the python library which internally defines the functions ‘get_number_fans'.  This function provide total number of fans available in the system. 
+In the code example above, libonlp is the python library which internally define the function of ‘get_number_fans'.  This function provide total number of fans available in the system. 
 
-We get the number of fans with 'fan_info_get(num_fans)' and loop through the count while setting fan RPM, and printing out the fan description.
+We get the number of fans with 'fan_info_get(num_fans)' and loop through all the fans to set RPM and printing out the fan description.
 
 
 ## License
