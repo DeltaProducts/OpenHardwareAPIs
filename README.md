@@ -76,7 +76,7 @@ num_of_therm_sensors = get_num_of_therm_sensors()
 
 
        --Returns number of sensors that are available in the system. The ids start from 1 to num_of_therm_sensors.
-thermal = get_thermal_info(id)
+thermal = get_thermal(id)
 
 
        --Returns the thermal sensor object. The object has the following details which 
@@ -102,7 +102,7 @@ num_of_leds = get_num_of_sys_leds()
 
 
        --Returns number of leds that are available in the system. The ids start from 1 to num_of_leds.  
-led = get_led_info(id)
+led = get_led(id)
 
 
         --Returns the led object. The object has the following details which 
@@ -118,17 +118,17 @@ led = get_led_info(id)
          Char:
        }
       ``` 
-led.set_led(state)
+led.set_state(state)
 
 
        --Sets the led state to either on or off.  
        
-led.set_led_color(color)
+led.set_color(color)
 
 
        --Sets the led color.
               
-led.set_led_char(char)
+led.set_char(char)
 
 
        --Sets the led character.
@@ -138,7 +138,7 @@ num_of_fans = get_num_of_fans()
 
 
       --Returns number of fans that are available in the system. The ids start from 1 to num_of_fans.       
-fan  = get_fan_info(id)  
+fan  = get_fan(id)  
 
 
       --Returns the fan object. The object has the following details which 
@@ -156,23 +156,23 @@ fan  = get_fan_info(id)
        SN:     NULL
       }
       ```
-fan.set_fan_rpm(rpm)  
+fan.set_rpm(rpm)  
 
 
      --Sets the fan's speed in RPMs.       
      
      
-fan.set_fan_percentage(percent)  
+fan.set_percentage(percent)  
 
     --Sets the fan's speed as a percentage.  
     
-fan.set_fan_mode(mode)  
+fan.set_mode(mode)  
 
 
     --Sets the fan's speed by mode.  
     
     
-fan.set_fan_direction(dir)
+fan.set_direction(dir)
 
 
      --Sets the fan's direction.  
@@ -183,7 +183,7 @@ num_sfp_ports = get_number_of_sfp_ports()
 
       --Return number of ports that are {Q}SFP-capable.
 
-sfp = get_sfp_info(port)
+sfp = get_sfp(port)
 
       --Returns the sfp object. The object has the following attributes which 
         can be accessed by their corresponding sfp.get_xyz().
@@ -213,7 +213,7 @@ num_of_psus = get_num_of_psus()
 
 
        --Returns number of PSUs that are available in the system. The ids start from 1 to num_of_psus.
-psu = get_psu_info(id)
+psu = get_psu(id)
 
 
        --Returns the psu object. The object has the following details which 
