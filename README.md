@@ -5,7 +5,7 @@ OpenHardwareAPIs - A set of Python APIs to control bare-metal switches fan,led,p
 These APIs are written in python implemented by using ctypes to interface with C Language APIs provided by ONLP libraries.
 
 ## Code Example 
-The following code is to redefine the C structures in the library onlp to python.
+Following code is to redefine the “C” structures, in ONLP library, to python
 ```
    class onlp_fan_mode_e:
            ONLP_FAN_MODE_OFF = 1
@@ -42,11 +42,11 @@ def set_fan_rpm(fanid, rpm):
 ```
 
 ## Motivation
-The motivation for this is to give developer a way to control different features of the switch's hardware components.  
+Motivation for this library is to give developer a way to control and validate different features of the switch's hardware components.
 
 
 ## API Reference
-The following are the list of APIs that will be provided by this python library.
+Following are initial list of APIs that will be provided by this python library.  In the future these libraries may be expanded to other components.”
 
 ### System information
 sys_info = get_system_info()  
@@ -249,7 +249,10 @@ while(num_fans > 0):
   num_fans = num_fans - 1
 ```
 
-In the above code example the libonlp is the python library which internally defines the functions get_number_fans which provide total number of fans available in the system. The function fan_info_get(num_fans) will return the corresponding fan object and further operations like setting the fan's rpm and getting the fan's description e.t.c can be achieved.
+In the code example above, libonlp is the python library which internally defines the functions ‘get_number_fans'.  This function provide total number of fans available in the system. 
+
+We get the number of fans with 'fan_info_get(num_fans)' and loop through the count while setting fan RPM, and printing out the fan description.
+
 
 ## License
 Work In Progress..
