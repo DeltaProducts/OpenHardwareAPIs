@@ -5,7 +5,7 @@ OpenHardwareAPIs - A set of Python APIs to control bare-metal switches fan,led,p
 These APIs are written in python implemented by using ctypes to interface with C Language APIs provided by ONLP libraries.
 
 ## Code Example 
-The following code is redefining the C structures in the library onlp to python.
+The following code is to redefine the C structures in the library onlp to python.
 ```
    class onlp_fan_mode_e:
            ONLP_FAN_MODE_OFF = 1
