@@ -7,38 +7,31 @@ These APIs are written in python implemented by using ctypes to interface with C
 ## Code Example 
 Following code is to redefine the “C” structures, in ONLP library, to python
 ```
-   class onlp_fan_mode_e:
-           ONLP_FAN_MODE_OFF = 1
-           ONLP_FAN_MODE_SLOW = 2
-           ONLP_FAN_MODE_NORMAL = 3
-          ONLP_FAN_MODE_FAST = 4
-          ONLP_FAN_MODE_MAX = 5
-          ONLP_FAN_MODE_LAST = 5,
-          ONLP_FAN_MODE_COUNT= 6
-          ONLP_FAN_MODE_INVALID = -1,
-  class onlp_oid_hdr(ctypes.Structure):
-      _fields_ = [("id", ctypes.c_uint),
-                 ("description", ctypes.c_char * 128),
-                 ("poid", ctypes.c_uint),
-                 ("coids", ctypes.c_uint * 32)]
- 
- class onlp_fan_info_t(ctypes.Structure):
-      _fields_ = [("hdr", onlp_oid_hdr),
-                 ("status", ctypes.c_uint),
-                 ("caps", ctypes.c_uint),
-                 ("rpm", ctypes.c_int),
-                 ("percentage", ctypes.c_int),
-                 ("mode", ctypes.c_int),
-                 ("model", ctypes.c_char * 64),
-                 ("serial",ctypes.c_char * 64)]                 
-```
-```
-def set_fan_rpm(fanid, rpm):
-        get_fan = onlp_fan_info_t()
-        fan_oid = 0x300000
-        testlib.onlp_fan_init() // The onlp_fan_init is a C function.
-        fan_oid = fan_oid | fanid
-        testlib.onlp_fan_info_get(fan_oid, rpm)
+class onlp_fan_info_t(ctypes.Structure):
+   _fields_ = [("hdr", onlp_oid_hdr),
+              ("status", ctypes.c_uint),
+              ("caps", ctypes.c_uint),
+              ("rpm", ctypes.c_int),
+              ("percentage", ctypes.c_int),
+              ("mode", ctypes.c_int),
+              ("model", ctypes.c_char * 64),
+              ("serial",ctypes.c_char * 64)]   
+class fan(object):
+    fanoid = 0x3000000
+    onlp_fan = onlp_fan_info_t()
+    def __init__(self, fanid):
+        self.fanoid = self.fanoid | fanid
+        self.libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
+        self.libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fan_info_t)]
+
+        self.libfan.onlp_fan_info_get.restype = ctypes.c_int
+        self.libfan.onlp_fan_init()
+        self.obj = self.libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
+    def set_rpm(self, rpm):
+        self.libfan.onlp_fan_init()
+        self.libfan.onlp_fan_rpm_set(self.fanoid, rpm)
+        self.obj = self.libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
+
 ```
 
 ## Motivation
@@ -52,8 +45,8 @@ Following are initial list of APIs that will be provided by this python library.
 sys_info = get_system_info()  
 
 
-       --Returns the system information.The returned object has the following details which 
-         can be accessed by their corresponding sys_info.get_xyz() function call.
+       --Returns the system information object.The object has the following details which 
+         can be accessed by their corresponding names.
        
        
        ```  
@@ -72,15 +65,10 @@ sys_info = get_system_info()
        ```
    
 ### Thermal Sensors information.
-num_of_therm_sensors = get_num_of_therm_sensors()
+therms = get_thermal_sensors()
 
 
-       --Returns number of sensors that are available in the system. The ids start from 1 to num_of_therm_sensors.
-thermal = get_thermal(id)
-
-
-       --Returns the thermal sensor object. The object has the following details which 
-         can be accessed by their corresponding thermal.get_xyz functions.
+       --Returns list of thermal sensor objects that are available in the system. The list can be accessed by therms[1].The object has the following details which can be accessed by their corresponding names.
        
        
        ```
@@ -98,15 +86,10 @@ thermal = get_thermal(id)
          }
          ```
 ### System LEDs information.       
-num_of_leds = get_num_of_sys_leds()
+leds = get_leds()
 
 
-       --Returns number of leds that are available in the system. The ids start from 1 to num_of_leds.  
-led = get_led(id)
-
-
-        --Returns the led object. The object has the following details which 
-          can be accessed by their corresponding led.get_xyz functions.
+       --Returns list of led objects that are available in the system. The list can be accessed by therms[1].The object has the following details which can be accessed by their corresponding names.
         
         
       ```        
@@ -134,15 +117,11 @@ led.set_char(char)
        --Sets the led character.
        
 ### Fan information.
-num_of_fans = get_num_of_fans()  
+fans = get_fans()  
 
 
-      --Returns number of fans that are available in the system. The ids start from 1 to num_of_fans.       
-fan  = get_fan(id)  
-
-
-      --Returns the fan object. The object has the following details which 
-        can be accessed by their corresponding fan.get_xyz functions.  
+      --Returns the list of fan objects. The object has the following details which 
+        can be accessed by their corresponding names.  
       
       
       ```
@@ -179,14 +158,10 @@ fan.set_direction(dir)
  
      
 ###  {Q}SFP information.
-num_sfp_ports = get_number_of_sfp_ports()
+sfps = get_sfp_ports()
 
-      --Return number of ports that are {Q}SFP-capable.
-
-sfp = get_sfp(port)
-
-      --Returns the sfp object. The object has the following attributes which 
-        can be accessed by their corresponding sfp.get_xyz().
+      --Returns the list of sfp object. The object has the following attributes which 
+        can be accessed by their corresponding names.
       ```
       Port 1: Present, Status = 0x00000014 [ RX_LOS,TX_DISABLE ]
       eeprom:
@@ -209,17 +184,11 @@ sfp = get_sfp(port)
      ```      
 
 ### PSU information.
-num_of_psus = get_num_of_psus()
+psus = get_psus()
 
 
-       --Returns number of PSUs that are available in the system. The ids start from 1 to num_of_psus.
-psu = get_psu(id)
-
-
-       --Returns the psu object. The object has the following details which 
-         can be accessed by their corresponding psu.get_xyz functions.
-       
-       
+      --Returns the list of psu object. The object has the following attributes which 
+        can be accessed by their corresponding names.       
        ```
        psu @ 1 = {
            Description: PSU-1
@@ -241,17 +210,15 @@ psu = get_psu(id)
 
 ```
 import libonlp
-num_fans = libonlp.get_number_of_fans()
-while(num_fans > 0):
-  fan = libonlp.fan_info_get(num_fans)
-  fan.set_fan_rpm(10000)
-  print fan.get_description()
-  num_fans = num_fans - 1
+fans = libonlp.get_fans()
+count = fans.len()
+while(count > 0):
+  fans[count].set_rpm(10000)
+  print fans[count].description()
+  count = count - 1
 ```
 
-In the code example above, libonlp is the python library which internally define the function of ‘get_number_fans'.  This function provide total number of fans available in the system. 
-
-We get the number of fans with 'fan_info_get(num_fans)' and loop through all the fans to set RPM and printing out the fan description.
+In the code example above, libonlp is the python library which internally define the function of ‘get_fans'.This function returns list of fan objects. In the loop above, all the fans rpm is being set to 10000 and all the fans description is being printed.
 
 
 ## License
