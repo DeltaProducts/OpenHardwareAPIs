@@ -15,7 +15,19 @@ class onlp_fan_info_t(ctypes.Structure):
               ("percentage", ctypes.c_int),
               ("mode", ctypes.c_int),
               ("model", ctypes.c_char * 64),
-              ("serial",ctypes.c_char * 64)]   
+              ("serial",ctypes.c_char * 64)]
+def get_fans():
+    id = 1
+    while(true):
+      fan = fan(id)
+      status = fan.status
+      if(status):
+         fanlist.append(fan)
+      else:
+         break
+      id = id + 1
+    return fanlist
+    
 class fan(object):
     fanoid = 0x3000000
     onlp_fan = onlp_fan_info_t()
