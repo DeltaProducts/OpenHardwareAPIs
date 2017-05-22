@@ -10,7 +10,6 @@ These APIs are written in python implemented by using ctypes to interface with C
       the library to access the fan properties and control the fan's rpm.
 ```
 import libonlp
-fanonlp_init()
 fans = libonlp.get_fans()
 count = fans.len()
 while(count > 0):
@@ -22,6 +21,12 @@ while(count > 0):
 ## Code Example 
 Following code is to redefine the “C” structures, in ONLP library, to python
 ```
+class libonlp:
+    def __init__():
+          libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
+          libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
+          libfan.onlp_fan_info_get.restype = ctypes.c_int    
+          
 class onlp_fan_info_t(ctypes.Structure):
    _fields_ = [("hdr", onlp_oid_hdr),
               ("status", ctypes.c_uint),
@@ -30,13 +35,7 @@ class onlp_fan_info_t(ctypes.Structure):
               ("percentage", ctypes.c_int),
               ("mode", ctypes.c_int),
               ("model", ctypes.c_char * 64),
-              ("serial",ctypes.c_char * 64)]
-def fanonlp_init():
-    global libfan
-    libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-    libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
-    libfan.onlp_fan_info_get.restype = ctypes.c_int
-    
+              ("serial",ctypes.c_char * 64)]   
               
 def get_fans():
     id = 1
