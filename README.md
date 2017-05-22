@@ -16,6 +16,13 @@ class onlp_fan_info_t(ctypes.Structure):
               ("mode", ctypes.c_int),
               ("model", ctypes.c_char * 64),
               ("serial",ctypes.c_char * 64)]
+def fanonlp_init():
+    global libfan
+    libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
+    libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
+    libfan.onlp_fan_info_get.restype = ctypes.c_int
+    
+              
 def get_fans():
     id = 1
     while(true):
@@ -33,19 +40,31 @@ class fan(object):
     onlp_fan = onlp_fan_info_t()
     def __init__(self, fanid):
         self.fanoid = self.fanoid | fanid
-        self.libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-        self.libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fan_info_t)]
+        libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
+        libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fan_info_t)]
 
-        self.libfan.onlp_fan_info_get.restype = ctypes.c_int
-        self.libfan.onlp_fan_init()
-        self.obj = self.libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
+        libfan.onlp_fan_info_get.restype = ctypes.c_int
+        libfan.onlp_fan_init()
+        self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
     def set_rpm(self, rpm):
-        self.libfan.onlp_fan_init()
-        self.libfan.onlp_fan_rpm_set(self.fanoid, rpm)
-        self.obj = self.libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
+        libfan.onlp_fan_init()
+        libfan.onlp_fan_rpm_set(self.fanoid, rpm)
+        self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
 
 ```
-
+## Tests
+      
+      The above code example will be compiled as a python module. The following test sample uses the library to access the fan properties and control the fan's rpm.
+```
+import libonlp
+fanonlp_init()
+fans = libonlp.get_fans()
+count = fans.len()
+while(count > 0):
+  fans[count].set_rpm(10000)
+  print fans[count].description()
+  count = count - 1
+```
 ## Motivation
 Motivation for this library is to give developer a way to control and validate different features of the switch's hardware components.
 
@@ -218,17 +237,7 @@ psus = get_psus()
 
          ```
 
-## Tests
 
-```
-import libonlp
-fans = libonlp.get_fans()
-count = fans.len()
-while(count > 0):
-  fans[count].set_rpm(10000)
-  print fans[count].description()
-  count = count - 1
-```
 
 In the code example above, libonlp is the python library which internally define the function of ‘get_fans'.This function returns list of fan objects. In the loop above, all the fans rpm is being set to 10000 and all the fans description is being printed.
 
