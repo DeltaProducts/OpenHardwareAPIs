@@ -9,7 +9,7 @@ These APIs are written in python implemented by using ctypes to interface with C
       The below code example will be compiled as a python module. The following test sample uses 
       the library to access the fan properties and control the fan's rpm.
 ```
-from libonlp import libonlp
+import libonlp
 fans = libonlp.get_fans()
 count = fans.len()
 while(count > 0):
