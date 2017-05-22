@@ -4,6 +4,20 @@ OpenHardwareAPIs - A set of Python APIs to control bare-metal switches fan,led,p
 ## Synopsis
 These APIs are written in python implemented by using ctypes to interface with C Language APIs provided by ONLP libraries.
 
+## Tests
+      
+      The above code example will be compiled as a python module. The following test sample uses the library to access the fan properties and control the fan's rpm.
+```
+import libonlp
+fanonlp_init()
+fans = libonlp.get_fans()
+count = fans.len()
+while(count > 0):
+  fans[count].set_rpm(10000)
+  print fans[count].description()
+  count = count - 1
+```
+
 ## Code Example 
 Following code is to redefine the “C” structures, in ONLP library, to python
 ```
@@ -52,19 +66,7 @@ class fan(object):
         self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
 
 ```
-## Tests
-      
-      The above code example will be compiled as a python module. The following test sample uses the library to access the fan properties and control the fan's rpm.
-```
-import libonlp
-fanonlp_init()
-fans = libonlp.get_fans()
-count = fans.len()
-while(count > 0):
-  fans[count].set_rpm(10000)
-  print fans[count].description()
-  count = count - 1
-```
+
 ## Motivation
 Motivation for this library is to give developer a way to control and validate different features of the switch's hardware components.
 
@@ -243,4 +245,3 @@ In the code example above, libonlp is the python library which internally define
 
 
 ## License
-Work In Progress..
