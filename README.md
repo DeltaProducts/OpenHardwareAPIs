@@ -6,8 +6,7 @@ These APIs are written in python implemented by using ctypes to interface with C
 
 ## Tests
       
-      The below code example will be compiled as a python module. The following test sample uses 
-      the library to access the fan properties and control the fan's rpm.
+      The following test sample uses the APIs to access the fan properties and control the fan's rpm.
 ```
 import libonlp
 fans = libonlp.get_fans()
