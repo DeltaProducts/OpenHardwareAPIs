@@ -22,10 +22,10 @@ Following code is to redefine the “C” structures, in ONLP library, to python
 ```
 class libonlp:
     def __init__():
-          libonlp = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-          libonlp.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
+          libonlp = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so') // Using ctypes to load "C" library.
+          libonlp.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)] // Sample prototype of the "C" function.
           libonlp.onlp_fan_info_get.restype = ctypes.c_int
-          .....//leds/sfp/psus.. will also be initialized here.
+          .....//leds/sfp/psus e.t.c "C" prototypes will go here.
           
 class onlp_fan_info_t(ctypes.Structure): // Similar structures need to be defined for other onlp supported components.
    _fields_ = [("hdr", onlp_oid_hdr),
@@ -37,7 +37,7 @@ class onlp_fan_info_t(ctypes.Structure): // Similar structures need to be define
               ("model", ctypes.c_char * 64),
               ("serial",ctypes.c_char * 64)]   
               
-              
+//Following is Sample code for fan object. The sample test code written above uses the following functions.              
 def get_fans():
     id = 1
     while(true):
