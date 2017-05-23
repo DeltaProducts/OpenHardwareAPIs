@@ -22,9 +22,10 @@ Following code is to redefine the “C” structures, in ONLP library, to python
 ```
 class libonlp:
     def __init__():
-          libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-          libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
-          libfan.onlp_fan_info_get.restype = ctypes.c_int    
+          libonlp = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
+          libonlp.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
+          libonlp.onlp_fan_info_get.restype = ctypes.c_int
+          .....//leds/sfp/psus.. will also be initialized here.
           
 class onlp_fan_info_t(ctypes.Structure):
    _fields_ = [("hdr", onlp_oid_hdr),
@@ -35,6 +36,7 @@ class onlp_fan_info_t(ctypes.Structure):
               ("mode", ctypes.c_int),
               ("model", ctypes.c_char * 64),
               ("serial",ctypes.c_char * 64)]   
+              
               
 def get_fans():
     id = 1
@@ -53,15 +55,11 @@ class fan(object):
     onlp_fan = onlp_fan_info_t()
     def __init__(self, fanid):
         self.fanoid = self.fanoid | fanid
-        libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-        libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fan_info_t)]
-
-        libfan.onlp_fan_info_get.restype = ctypes.c_int
-        libfan.onlp_fan_init()
+        libonlp.onlp_fan_init()
         self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
     def set_rpm(self, rpm):
-        libfan.onlp_fan_init()
-        libfan.onlp_fan_rpm_set(self.fanoid, rpm)
+        libonlp.onlp_fan_init()
+        libonlp.onlp_fan_rpm_set(self.fanoid, rpm)
         self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
 
 ```
