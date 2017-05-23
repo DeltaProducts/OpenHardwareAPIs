@@ -27,7 +27,7 @@ class libonlp:
           libonlp.onlp_fan_info_get.restype = ctypes.c_int
           .....//leds/sfp/psus.. will also be initialized here.
           
-class onlp_fan_info_t(ctypes.Structure):
+class onlp_fan_info_t(ctypes.Structure): // Similar structures need to be defined for other onlp supported components.
    _fields_ = [("hdr", onlp_oid_hdr),
               ("status", ctypes.c_uint),
               ("caps", ctypes.c_uint),
