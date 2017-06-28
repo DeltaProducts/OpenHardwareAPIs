@@ -2,15 +2,13 @@
 OpenHardwareAPIs - A set of Python APIs to control bare-metal switches fan,led,power,temperature sensors e.t.c.
 
 ## Synopsis
-These APIs are written in python implemented by using ctypes to interface with C Language APIs provided by ONLP libraries.
+These APIs are developed in python implemented by using ctypes module, to interface with C Language APIs which are provided by ONLP libraries.
 
 ## Tests
       
-      The below code example will be compiled as a python module. The following test sample uses 
-      the library to access the fan properties and control the fan's rpm.
+      The following test sample uses the APIs developed to access the fan properties and control the fan's rpm.
 ```
 import libonlp
-fanonlp_init()
 fans = libonlp.get_fans()
 count = fans.len()
 while(count > 0):
@@ -20,9 +18,16 @@ while(count > 0):
 ```
 
 ## Code Example 
-Following code is to redefine the “C” structures, in ONLP library, to python
+Following code is an example to redefine the “C” structures and functions, in ONLP library, to python
 ```
-class onlp_fan_info_t(ctypes.Structure):
+class libonlp:
+    def __init__():
+          libonlp = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so') // Using ctypes to load "C" library.
+          libonlp.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)] // Sample prototype of the "C" function.
+          libonlp.onlp_fan_info_get.restype = ctypes.c_int
+          .....//leds/sfp/psus e.t.c "C" prototypes will go here.
+          
+class onlp_fan_info_t(ctypes.Structure): // Similar structures need to be defined for other onlp supported components.
    _fields_ = [("hdr", onlp_oid_hdr),
               ("status", ctypes.c_uint),
               ("caps", ctypes.c_uint),
@@ -30,14 +35,9 @@ class onlp_fan_info_t(ctypes.Structure):
               ("percentage", ctypes.c_int),
               ("mode", ctypes.c_int),
               ("model", ctypes.c_char * 64),
-              ("serial",ctypes.c_char * 64)]
-def fanonlp_init():
-    global libfan
-    libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-    libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fainfo_t)]
-    libfan.onlp_fan_info_get.restype = ctypes.c_int
-    
+              ("serial",ctypes.c_char * 64)]   
               
+//Following is Sample code for fan object. The sample test code written above uses the following functions.              
 def get_fans():
     id = 1
     while(true):
@@ -55,15 +55,11 @@ class fan(object):
     onlp_fan = onlp_fan_info_t()
     def __init__(self, fanid):
         self.fanoid = self.fanoid | fanid
-        libfan = ctypes.CDLL('/lib/x86_64-linux-gnu/libonlp.so')
-        libfan.onlp_fan_info_get.argtypes = [ctypes.c_uint, ctypes.POINTER(onlp_fan_info_t)]
-
-        libfan.onlp_fan_info_get.restype = ctypes.c_int
-        libfan.onlp_fan_init()
+        libonlp.onlp_fan_init()
         self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
     def set_rpm(self, rpm):
-        libfan.onlp_fan_init()
-        libfan.onlp_fan_rpm_set(self.fanoid, rpm)
+        libonlp.onlp_fan_init()
+        libonlp.onlp_fan_rpm_set(self.fanoid, rpm)
         self.obj = libfan.onlp_fan_info_get(self.fanoid, ctypes.byref(self.onlp_fan))
 
 ```
@@ -73,7 +69,7 @@ Motivation for this library is to give developer a way to control and validate d
 
 
 ## API Reference
-Following are initial list of APIs that will be provided by this python library.  In the future these libraries may be expanded to other components.”
+Following are initial list of APIs that will be provided by this python library.  In the future these libraries may be expanded to other components.
 
 ### System information
 sys_info = get_system_info()  
@@ -85,16 +81,16 @@ sys_info = get_system_info()
        
        ```  
        System Information: = {
-           Product Name: AG7648
-           Serial Number: A766F0DL164S00031
-           MAC: 00:18:23:30:d7:fa
-           MAC Range: 256
-           Manufacturer: DNI
-           Manufacture Date: 04/30/2016 22:17:18
-           Platform Name: x86_64-delta_ag7648-r0
-           Country Code: CN
-           Diag Version: 0.1
-           ONIE Version: 2015.05-dirty
+           product_name: AG7648
+           serial_number: A766F0DL164S00031
+           mac: 00:18:23:30:d7:fa
+           mac_ange: 256
+           manufacturer: DNI
+           manufacturer_date: 04/30/2016 22:17:18
+           platform_name: x86_64-delta_ag7648-r0
+           country_code: CN
+           diag_version: 0.1
+           onie_version: 2015.05-dirty
        }
        ```
    
@@ -107,11 +103,11 @@ therms = get_thermal_sensors()
        
        ```
        thermal @ <id> = {
-             Description: Thermal Sensor 2- close to sfp+ phy
-             Status: 0x00000001 [ PRESENT ]
-             Caps:   0x0000000f [ GET_TEMPERATURE,GET_WARNING_THRESHOLD,GET_ERROR_THRE
+             description: Thermal Sensor 2- close to sfp+ phy
+             status: 0x00000001 [ PRESENT ]
+             caps:   0x0000000f [ GET_TEMPERATURE,GET_WARNING_THRESHOLD,GET_ERROR_THRE
       SHOLD,GET_SHUTDOWN_THRESHOLD ]
-             Temperature: 28875
+             temperature: 28875
              thresholds = {
                  Warning: 45000
                  Error: 55000
@@ -128,11 +124,11 @@ leds = get_leds()
         
       ```        
        led @ <id> = {
-         Description: sys
-         Status: 0x00000005 [ PRESENT,ON ]
-         Caps:   0x0003c000 [ YELLOW,YELLOW_BLINKING,GREEN,GREEN_BLINKING ]
-         Mode: GREEN
-         Char:
+         description: sys
+         status: 0x00000005 [ PRESENT,ON ]
+         caps:   0x0003c000 [ YELLOW,YELLOW_BLINKING,GREEN,GREEN_BLINKING ]
+         mode: GREEN
+         char:
        }
       ``` 
 led.set_state(state)
@@ -160,13 +156,13 @@ fans = get_fans()
       
       ```
       fan @ <id> = {
-       Description: Chassis Fan 3
-       Status: 0x00000005 [ PRESENT,B2F ]
-       Caps:   0x0000003c [ SET_RPM,SET_PERCENTAGE,GET_RPM,GET_PERCENTAGE ]
-       RPM:    8057
-       Per:    42
-       Model:  ONLP_FAN_MODE_NORMAL
-       SN:     NULL
+       description: Chassis Fan 3
+       status: 0x00000005 [ PRESENT,B2F ]
+       caps:   0x0000003c [ SET_RPM,SET_PERCENTAGE,GET_RPM,GET_PERCENTAGE ]
+       rpm:    8057
+       percentage:    42
+       model:  ONLP_FAN_MODE_NORMAL
+       sn:     NULL
       }
       ```
 fan.set_rpm(rpm)  
@@ -197,7 +193,7 @@ sfps = get_sfp_ports()
       --Returns the list of sfp object. The object has the following attributes which 
         can be accessed by their corresponding names.
       ```
-      Port 1: Present, Status = 0x00000014 [ RX_LOS,TX_DISABLE ]
+      Port <id>: Present, status = 0x00000014 [ RX_LOS,TX_DISABLE ]
       eeprom:
         0000: 0d 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00
         0010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -225,11 +221,11 @@ psus = get_psus()
         can be accessed by their corresponding names.       
        ```
        psu @ 1 = {
-           Description: PSU-1
-           Model:  00007
+           description: PSU-1
+           model:  00007
            SN:     81 
-           Status: 0x00000005 [ PRESENT,UNPLUGGED ]
-           Caps:   0x00000000
+           status: 0x00000005 [ PRESENT,UNPLUGGED ]
+           caps:   0x00000000
            Vin:    116750
            Vout:   12023
            Iin:    761
